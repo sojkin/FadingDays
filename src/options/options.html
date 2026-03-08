@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="options.css">
+    <title>Fading Days – Settings</title>
+</head>
+
+<body>
+    <div class="container fade-in">
+        <header class="page-header">
+            <h1 class="logo">Fading Days</h1>
+            <p class="subtitle" data-i18n="optionsTitle"></p>
+        </header>
+
+        <!-- Language selector -->
+        <section class="section">
+            <h2 class="section-title" data-i18n="languageSection"></h2>
+            <p class="section-desc" data-i18n="languageDesc"></p>
+            <div class="field">
+                <label for="languageSelect" class="label" data-i18n="languageLabel"></label>
+                <select id="languageSelect" class="input">
+                    <!-- Options populated dynamically -->
+                </select>
+            </div>
+        </section>
+
+        <!-- Birth date -->
+        <section class="section">
+            <h2 class="section-title" data-i18n="birthDateSection"></h2>
+            <p class="section-desc" data-i18n="birthDateDesc"></p>
+            <div class="field">
+                <label for="birthDate" class="label" data-i18n="birthDateLabel"></label>
+                <input type="date" id="birthDate" class="input">
+            </div>
+        </section>
+
+        <!-- Targets -->
+        <section class="section">
+            <h2 class="section-title" data-i18n="targetsSection"></h2>
+            <p class="section-desc" data-i18n="targetsDesc"></p>
+
+            <div id="targetsList" class="targets-list">
+                <!-- Targets rendered dynamically -->
+            </div>
+
+            <button id="addTarget" class="btn-add">
+                <span class="btn-add-icon">+</span>
+                <span data-i18n="addTarget"></span>
+            </button>
+        </section>
+
+        <!-- Save status toast -->
+        <div id="saveStatus" class="save-status hidden">
+            <span class="save-icon">✓</span>
+            <span data-i18n="saved"></span>
+        </div>
+    </div>
+
+    <script src="options.js" type="module"></script>
+</body>
+
+</html>
