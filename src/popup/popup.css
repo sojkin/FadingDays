@@ -296,7 +296,29 @@ body {
 .footer {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 12px;
     padding: 14px 16px 16px;
+}
+
+.coffee-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.4;
+    transition: all 0.2s ease;
+}
+
+.coffee-link:hover {
+    opacity: 0.8;
+    border-color: var(--text-muted);
+    background: var(--bg-secondary);
 }
 
 .settings-btn {
