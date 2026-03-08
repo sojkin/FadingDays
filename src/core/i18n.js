@@ -39,6 +39,7 @@ const translations = {
         languageDesc: 'Choose the display language for the extension.',
         languageLabel: 'Language',
         defaultTargetName: 'Retirement',
+        supportText: 'Buy me a coffee',
     },
     pl: {
         // Popup
@@ -75,6 +76,7 @@ const translations = {
         languageDesc: 'Wybierz język wyświetlania rozszerzenia.',
         languageLabel: 'Język',
         defaultTargetName: 'Do Emerytury',
+        supportText: 'Postaw mi kawę',
     },
     de: {
         // Popup
@@ -111,6 +113,7 @@ const translations = {
         languageDesc: 'Wähle die Anzeigesprache der Erweiterung.',
         languageLabel: 'Sprache',
         defaultTargetName: 'Ruhestand',
+        supportText: 'Kauf mir einen Kaffee',
     },
 };
 

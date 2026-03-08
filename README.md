@@ -113,6 +113,14 @@ To add support for another language:
 
 ---
 
+## ☕ Support
+
+If you find this extension useful, you can support its development:
+
+<a href="https://buymeacoffee.com/4dpbvzmph0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40"></a>
+
+---
+
 ## 📄 License
 
 This project is open source. Feel free to use, modify, and distribute it.
