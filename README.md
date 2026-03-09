@@ -1,6 +1,6 @@
 # ⏳ Fading Days
 
-**Fading Days** is a minimalist Chromium browser extension that makes you aware of the passage of time by counting down to key moments in your life — retirement, milestones, or any date that matters to you.
+**Fading Days** is a minimalist browser extension for **Chrome** and **Firefox** that makes you aware of the passage of time by counting down to key moments in your life — retirement, milestones, or any date that matters to you.
 
 It calculates not just the remaining days, but also the number of **weekends**, **Christmas Eves**, **Easter Sundays**, and **summer vacations** left until your target date.
 
@@ -54,20 +54,21 @@ A full-page settings interface where you can:
 
 | Property        | Value                          |
 |-----------------|--------------------------------|
-| Platform        | Chromium browsers (Chrome, Edge, Opera, Brave, Vivaldi) |
+| Platform        | Chromium (Chrome, Edge, Opera, Brave, Vivaldi) + Firefox 109+ |
 | Manifest        | V3                             |
 | Permissions     | `storage` only                 |
 | Storage         | `chrome.storage.sync`          |
-| Build tools     | None required (vanilla JS)     |
+| Build tools     | None required (vanilla JS), optional `build.sh` for packaging |
 | External deps   | Google Fonts (Inter, JetBrains Mono) loaded via CSS |
 
 ### Project Structure
 
 ```
 FadingDays/
-├── manifest.json              # Extension manifest (MV3)
+├── manifest.json              # Extension manifest (MV3, Chrome + Firefox)
+├── build.sh                   # Build script for distribution packages
 ├── README.md                  # This file
-├── _locales/                  # Chrome native i18n (Store name/description)
+├── _locales/                  # Browser native i18n (Store name/description)
 │   ├── en/messages.json
 │   ├── pl/messages.json
 │   ├── de/messages.json
@@ -106,12 +107,28 @@ FadingDays/
 
 ## 🚀 Installation (Developer Mode)
 
+### Chrome / Chromium
 1. **Clone or download** this repository.
 2. Open your Chromium browser and navigate to `chrome://extensions/`.
 3. Enable **Developer mode** (toggle in the top-right corner).
 4. Click **"Load unpacked"** and select the `FadingDays/` project folder.
-5. The extension icon (hourglass) will appear in your toolbar.
-6. Click it to open the popup, then go to **Settings** to configure your targets.
+5. The extension icon will appear in your toolbar.
+
+### Firefox
+1. **Clone or download** this repository.
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+3. Click **"Load Temporary Add-on…"** and select the `manifest.json` file inside the `FadingDays/` folder.
+4. The extension icon will appear in your toolbar.
+
+> **Note:** Temporary add-ons are removed when Firefox is closed. To install permanently, package the extension (`./build.sh`) and submit it to [Firefox Add-ons (AMO)](https://addons.mozilla.org/).
+
+### Building distribution packages
+
+```bash
+./build.sh
+```
+
+This creates `dist/FadingDays-v{version}-chrome.zip` and `dist/FadingDays-v{version}-firefox.zip` ready for upload to Chrome Web Store and Firefox Add-ons.
 
 ---
 

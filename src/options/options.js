@@ -69,30 +69,35 @@ function renderTargets() {
         // Name field
         const nameField = document.createElement('div');
         nameField.className = 'field';
-        nameField.innerHTML = `
-            <label class="label">${escapeHtml(t('targetName'))}</label>
-            <input type="text" class="input target-name-input"
-                   placeholder="${escapeHtml(t('targetNamePlaceholder'))}"
-                   value="${escapeHtml(target.name || '')}">
-        `;
+        const nameLabel = document.createElement('label');
+        nameLabel.className = 'label';
+        nameLabel.textContent = t('targetName');
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'input target-name-input';
+        nameInput.placeholder = t('targetNamePlaceholder');
+        nameInput.value = target.name || '';
+        nameField.appendChild(nameLabel);
+        nameField.appendChild(nameInput);
         fields.appendChild(nameField);
 
         // Date field
         const dateField = document.createElement('div');
         dateField.className = 'field';
-        dateField.innerHTML = `
-            <label class="label">${escapeHtml(t('targetDate'))}</label>
-            <input type="date" class="input target-date-input"
-                   value="${target.date || ''}">
-        `;
+        const dateLabel = document.createElement('label');
+        dateLabel.className = 'label';
+        dateLabel.textContent = t('targetDate');
+        const dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        dateInput.className = 'input target-date-input';
+        dateInput.value = target.date || '';
+        dateField.appendChild(dateLabel);
+        dateField.appendChild(dateInput);
         fields.appendChild(dateField);
 
         card.appendChild(fields);
 
         // Bind input change listeners for auto-save
-        const nameInput = nameField.querySelector('.target-name-input');
-        const dateInput = dateField.querySelector('.target-date-input');
-
         nameInput.addEventListener('input', () => {
             data.targets[index].name = nameInput.value;
             autoSave();
