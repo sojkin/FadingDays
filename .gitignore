@@ -18,6 +18,9 @@
 dist/
 build/
 
+# Private notes (not part of extension)
+IDEAS.md
+
 # Screenshots (store assets, not part of extension)
 images/
 
