@@ -1,0 +1,14 @@
+{
+    "extensionName": {
+        "message": "Fading Days – Life Countdown",
+        "description": "Extension name shown in Chrome Web Store and browser"
+    },
+    "extensionDescription": {
+        "message": "Count down days, weekends, Christmas Eves, Easters & vacations to your key life milestones. Dark minimal design. Multi-language.",
+        "description": "Extension description for Chrome Web Store (max 132 chars)"
+    },
+    "extensionShortName": {
+        "message": "Fading Days",
+        "description": "Short name for limited space"
+    }
+}

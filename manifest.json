@@ -1,8 +1,11 @@
 {
     "manifest_version": 3,
-    "name": "Fading Days",
+    "name": "__MSG_extensionName__",
+    "short_name": "__MSG_extensionShortName__",
     "version": "1.0.0",
-    "description": "Uświadom sobie upływ czasu. Odliczaj dni, weekendy, święta i wakacje do kluczowych momentów w życiu.",
+    "description": "__MSG_extensionDescription__",
+    "default_locale": "en",
+    "homepage_url": "https://github.com/sojkin/FadingDays",
     "permissions": [
         "storage"
     ],

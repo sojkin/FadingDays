@@ -328,6 +328,12 @@ select.input option {
     background: var(--bg-secondary);
 }
 
+.footer-separator {
+    color: var(--border);
+    font-size: 12px;
+    user-select: none;
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
     width: 6px;

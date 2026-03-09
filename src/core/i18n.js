@@ -1,11 +1,10 @@
 /**
  * Fading Days – Internationalization (i18n) module
- * Supports: English (en), Polish (pl), German (de)
+ * Supports: English, Polish, German, Spanish, French, Korean, Chinese
  */
 
 const translations = {
     en: {
-        // Popup
         loading: 'Loading…',
         daysRemaining: 'days remaining',
         lifeProgress: '{percent}% of life behind you',
@@ -19,8 +18,6 @@ const translations = {
         nextTarget: 'Next target',
         settings: 'Settings',
         target: 'Target',
-
-        // Options
         optionsTitle: 'Configuration',
         birthDateSection: 'Date of Birth',
         birthDateDesc: 'Optional – used to display the life progress bar.',
@@ -42,7 +39,6 @@ const translations = {
         supportText: 'Buy me a coffee',
     },
     pl: {
-        // Popup
         loading: 'Ładowanie…',
         daysRemaining: 'dni pozostało',
         lifeProgress: '{percent}% życia za Tobą',
@@ -56,8 +52,6 @@ const translations = {
         nextTarget: 'Następny cel',
         settings: 'Ustawienia',
         target: 'Cel',
-
-        // Options
         optionsTitle: 'Konfiguracja odliczania',
         birthDateSection: 'Data urodzenia',
         birthDateDesc: 'Opcjonalnie – służy do wyświetlania paska postępu życia.',
@@ -79,7 +73,6 @@ const translations = {
         supportText: 'Postaw mi kawę',
     },
     de: {
-        // Popup
         loading: 'Laden…',
         daysRemaining: 'Tage verbleibend',
         lifeProgress: '{percent}% des Lebens hinter dir',
@@ -93,8 +86,6 @@ const translations = {
         nextTarget: 'Nächstes Ziel',
         settings: 'Einstellungen',
         target: 'Ziel',
-
-        // Options
         optionsTitle: 'Konfiguration',
         birthDateSection: 'Geburtsdatum',
         birthDateDesc: 'Optional – wird für den Lebensfortschrittsbalken verwendet.',
@@ -115,19 +106,159 @@ const translations = {
         defaultTargetName: 'Ruhestand',
         supportText: 'Kauf mir einen Kaffee',
     },
+    es: {
+        loading: 'Cargando…',
+        daysRemaining: 'días restantes',
+        lifeProgress: '{percent}% de vida detrás de ti',
+        weekends: 'Fines de semana',
+        christmasEves: 'Nochebuenas',
+        easters: 'Pascuas',
+        vacations: 'Vacaciones',
+        emptyStateText: 'Establece una fecha objetivo en las opciones para iniciar la cuenta regresiva.',
+        openOptions: 'Abrir opciones',
+        prevTarget: 'Objetivo anterior',
+        nextTarget: 'Siguiente objetivo',
+        settings: 'Ajustes',
+        target: 'Objetivo',
+        optionsTitle: 'Configuración',
+        birthDateSection: 'Fecha de nacimiento',
+        birthDateDesc: 'Opcional – se usa para mostrar la barra de progreso de vida.',
+        birthDateLabel: 'Fecha de nacimiento',
+        targetsSection: 'Objetivos (fechas objetivo)',
+        targetsDesc: 'Añade fechas hasta las que quieras hacer cuenta regresiva. El primer objetivo es el predeterminado.',
+        targetName: 'Nombre del objetivo',
+        targetDate: 'Fecha objetivo',
+        targetNamePlaceholder: 'ej. Jubilación',
+        defaultBadge: '★ Predeterminado',
+        targetBadge: 'Objetivo #{n}',
+        addTarget: 'Añadir nuevo objetivo',
+        deleteTarget: 'Eliminar',
+        saved: 'Guardado',
+        languageSection: 'Idioma',
+        languageDesc: 'Elige el idioma de visualización de la extensión.',
+        languageLabel: 'Idioma',
+        defaultTargetName: 'Jubilación',
+        supportText: 'Invítame un café',
+    },
+    fr: {
+        loading: 'Chargement…',
+        daysRemaining: 'jours restants',
+        lifeProgress: '{percent}% de vie derrière vous',
+        weekends: 'Week-ends',
+        christmasEves: 'Réveillons de Noël',
+        easters: 'Pâques',
+        vacations: 'Vacances',
+        emptyStateText: 'Définissez une date cible dans les options pour lancer le compte à rebours.',
+        openOptions: 'Ouvrir les options',
+        prevTarget: 'Objectif précédent',
+        nextTarget: 'Objectif suivant',
+        settings: 'Paramètres',
+        target: 'Objectif',
+        optionsTitle: 'Configuration',
+        birthDateSection: 'Date de naissance',
+        birthDateDesc: 'Facultatif – utilisé pour afficher la barre de progression de vie.',
+        birthDateLabel: 'Date de naissance',
+        targetsSection: 'Objectifs (dates cibles)',
+        targetsDesc: 'Ajoutez des dates pour lesquelles vous souhaitez un compte à rebours. Le premier objectif est celui par défaut.',
+        targetName: "Nom de l'objectif",
+        targetDate: 'Date cible',
+        targetNamePlaceholder: 'ex. Retraite',
+        defaultBadge: '★ Par défaut',
+        targetBadge: 'Objectif #{n}',
+        addTarget: 'Ajouter un objectif',
+        deleteTarget: 'Supprimer',
+        saved: 'Enregistré',
+        languageSection: 'Langue',
+        languageDesc: "Choisissez la langue d'affichage de l'extension.",
+        languageLabel: 'Langue',
+        defaultTargetName: 'Retraite',
+        supportText: 'Offrez-moi un café',
+    },
+    ko: {
+        loading: '로딩 중…',
+        daysRemaining: '일 남음',
+        lifeProgress: '인생의 {percent}%가 지나갔습니다',
+        weekends: '주말',
+        christmasEves: '크리스마스 이브',
+        easters: '부활절',
+        vacations: '여름휴가',
+        emptyStateText: '카운트다운을 시작하려면 옵션에서 목표 날짜를 설정하세요.',
+        openOptions: '옵션 열기',
+        prevTarget: '이전 목표',
+        nextTarget: '다음 목표',
+        settings: '설정',
+        target: '목표',
+        optionsTitle: '설정',
+        birthDateSection: '생년월일',
+        birthDateDesc: '선택사항 – 생애 진행률 표시줄에 사용됩니다.',
+        birthDateLabel: '생년월일',
+        targetsSection: '목표 (목표 날짜)',
+        targetsDesc: '카운트다운할 날짜를 추가하세요. 첫 번째 목표가 기본값입니다.',
+        targetName: '목표 이름',
+        targetDate: '목표 날짜',
+        targetNamePlaceholder: '예: 은퇴',
+        defaultBadge: '★ 기본',
+        targetBadge: '목표 #{n}',
+        addTarget: '새 목표 추가',
+        deleteTarget: '삭제',
+        saved: '저장됨',
+        languageSection: '언어',
+        languageDesc: '확장 프로그램의 표시 언어를 선택하세요.',
+        languageLabel: '언어',
+        defaultTargetName: '은퇴',
+        supportText: '커피 한 잔 사주기',
+    },
+    zh: {
+        loading: '加载中…',
+        daysRemaining: '天剩余',
+        lifeProgress: '人生已过 {percent}%',
+        weekends: '周末',
+        christmasEves: '平安夜',
+        easters: '复活节',
+        vacations: '暑假',
+        emptyStateText: '请在选项中设置目标日期以开始倒计时。',
+        openOptions: '打开选项',
+        prevTarget: '上一个目标',
+        nextTarget: '下一个目标',
+        settings: '设置',
+        target: '目标',
+        optionsTitle: '配置',
+        birthDateSection: '出生日期',
+        birthDateDesc: '可选 - 用于显示生命进度条。',
+        birthDateLabel: '出生日期',
+        targetsSection: '目标（目标日期）',
+        targetsDesc: '添加您想要倒计时的日期。第一个目标为默认目标。',
+        targetName: '目标名称',
+        targetDate: '目标日期',
+        targetNamePlaceholder: '例如：退休',
+        defaultBadge: '★ 默认',
+        targetBadge: '目标 #{n}',
+        addTarget: '添加新目标',
+        deleteTarget: '删除',
+        saved: '已保存',
+        languageSection: '语言',
+        languageDesc: '选择扩展程序的显示语言。',
+        languageLabel: '语言',
+        defaultTargetName: '退休',
+        supportText: '请我喝杯咖啡',
+    },
 };
 
 const SUPPORTED_LANGUAGES = [
     { code: 'en', name: 'English' },
     { code: 'pl', name: 'Polski' },
     { code: 'de', name: 'Deutsch' },
+    { code: 'es', name: 'Español' },
+    { code: 'fr', name: 'Français' },
+    { code: 'ko', name: '한국어' },
+    { code: 'zh', name: '中文' },
 ];
 
 let currentLang = 'en';
 
 /**
  * Set the active language.
- * @param {string} langCode - Language code (en, pl, de)
+ * @param {string} langCode - Language code
  */
 function setLanguage(langCode) {
     if (translations[langCode]) {
