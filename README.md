@@ -17,12 +17,16 @@ It calculates not just the remaining days, but also the number of **weekends**, 
   - Remaining summer vacations (July 1)
 - **Life progress bar** — Optionally enter your date of birth to see a fading progress bar showing how much of your life (relative to the target) has already passed.
 - **Cloud sync** — All settings are stored via `chrome.storage.sync`, so your data follows you across devices logged into the same browser account.
-- **Multi-language support** — Available in:
+- **Multi-language support** — Available in 7 languages:
   - 🇬🇧 English
   - 🇵🇱 Polski (Polish)
   - 🇩🇪 Deutsch (German)
+  - 🇪🇸 Español (Spanish)
+  - 🇫🇷 Français (French)
+  - 🇰🇷 한국어 (Korean)
+  - 🇨🇳 中文 (Chinese)
 
-  Language can be changed at any time in the extension's settings page.
+  Language can be changed at any time in the extension's settings page. The extension name and description are also translated natively via Chrome's `_locales` system for better discoverability in Chrome Web Store.
 - **Dark, minimal design** — A somber, thoughtful aesthetic with a deep dark background, muted copper accent color, monospace number fonts, and smooth fade-in animations.
 
 ---
@@ -39,9 +43,10 @@ When you click the extension icon, you see:
 
 ### Options page
 A full-page settings interface where you can:
-- Select your preferred **language** (English, Polish, German).
+- Select your preferred **language** (7 languages available).
 - Enter your **date of birth** (optional, for the life progress bar).
 - Manage **target dates** — add, edit, rename, or delete countdown targets.
+- Links to **GitHub** repository and **Buy Me a Coffee** in the footer.
 
 ---
 
@@ -62,6 +67,14 @@ A full-page settings interface where you can:
 FadingDays/
 ├── manifest.json              # Extension manifest (MV3)
 ├── README.md                  # This file
+├── _locales/                  # Chrome native i18n (Store name/description)
+│   ├── en/messages.json
+│   ├── pl/messages.json
+│   ├── de/messages.json
+│   ├── es/messages.json
+│   ├── fr/messages.json
+│   ├── ko/messages.json
+│   └── zh/messages.json
 ├── assets/
 │   └── icons/                 # Extension icons (16, 32, 48, 128 px)
 │       ├── icon16.png
@@ -71,7 +84,7 @@ FadingDays/
 └── src/
     ├── core/                  # Shared modules
     │   ├── calculations.js    # Countdown engine (days, weekends, holidays)
-    │   ├── i18n.js            # Internationalization (EN, PL, DE)
+    │   ├── i18n.js            # UI internationalization (7 languages)
     │   └── storage.js         # chrome.storage.sync wrapper
     ├── popup/                 # Popup UI (shown on icon click)
     │   ├── popup.html
