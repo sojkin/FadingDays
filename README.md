@@ -110,7 +110,7 @@ FadingDays/
 Install Fading Days directly from your browser's official extension store:
 
 - **🦊 Firefox Add-ons**: https://addons.mozilla.org/pl/firefox/addon/fading-days-life-countdown/
-- **🔵 Chrome Web Store**: [Coming soon]
+- **🔵 Chrome Web Store**: https://chromewebstore.google.com/detail/fading-days-–-odliczanie/cklkhngecjnkbcemnlfhcmapfcnlbdnb
 
 ---
 
