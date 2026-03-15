@@ -2,7 +2,7 @@
  * Fading Days – Popup Logic
  * Displays countdown metrics and handles target navigation.
  */
-import { computeAll, lifeProgress } from '../core/calculations.js';
+import { computeAll, lifeProgress, lifeEndDate, resolveTargetDate } from '../core/calculations.js';
 import { loadData, setActiveTarget } from '../core/storage.js';
 import { setLanguage, t, applyTranslations } from '../core/i18n.js';
 
@@ -16,10 +16,7 @@ const daysCountEl = document.getElementById('daysCount');
 const progressContainer = document.getElementById('progressContainer');
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
-const weekendsCountEl = document.getElementById('weekendsCount');
-const christmasCountEl = document.getElementById('christmasCount');
-const easterCountEl = document.getElementById('easterCount');
-const vacationCountEl = document.getElementById('vacationCount');
+const metricsGrid = document.getElementById('metricsGrid');
 const openOptionsBtn = document.getElementById('openOptions');
 const openOptionsEmptyBtn = document.getElementById('openOptionsEmpty');
 
@@ -68,20 +65,18 @@ function render() {
         return;
     }
 
-    // Find active target index
-    const activeIdx = currentData.targets.findIndex(
+    // Find active target index (fallback to isDefault, then first)
+    let activeIdx = currentData.targets.findIndex(
         (target) => target.id === currentData.activeTargetId
     );
+    if (activeIdx < 0) {
+        activeIdx = currentData.targets.findIndex((target) => target.isDefault);
+    }
     currentIndex = activeIdx >= 0 ? activeIdx : 0;
     const target = currentData.targets[currentIndex];
 
-    if (!target || !target.date) {
-        showEmpty();
-        return;
-    }
-
-    const targetDate = new Date(target.date);
-    if (isNaN(targetDate.getTime())) {
+    const targetDate = resolveTargetDate(target, currentData.birthDate);
+    if (!target || !targetDate || isNaN(targetDate.getTime())) {
         showEmpty();
         return;
     }
@@ -100,23 +95,50 @@ function render() {
 
     // Compute and animate metrics
     const metrics = computeAll(targetDate);
-
     animateNumber(daysCountEl, metrics.days, 800);
-    animateNumber(weekendsCountEl, metrics.weekends, 600);
-    animateNumber(christmasCountEl, metrics.christmasEves, 600);
-    animateNumber(easterCountEl, metrics.easters, 600);
-    animateNumber(vacationCountEl, metrics.vacations, 600);
 
-    // Life progress bar (requires birth date)
-    if (currentData.birthDate) {
+    // Build dynamic metrics grid
+    const enabled = currentData.enabledMetrics || { weekends: true, christmasEves: true, easters: true, vacations: true };
+    const metricDefs = [
+        { key: 'weekends', value: metrics.weekends, label: 'weekends' },
+        { key: 'christmasEves', value: metrics.christmasEves, label: 'christmasEves' },
+        { key: 'easters', value: metrics.easters, label: 'easters' },
+        { key: 'vacations', value: metrics.vacations, label: 'vacations' },
+    ];
+    const activeMetrics = metricDefs.filter(m => enabled[m.key]);
+
+    metricsGrid.innerHTML = '';
+    if (activeMetrics.length > 0) {
+        metricsGrid.classList.remove('hidden');
+        metricsGrid.setAttribute('data-count', activeMetrics.length);
+        activeMetrics.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'metric';
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'metric-value';
+            valueSpan.textContent = '—';
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'metric-label';
+            labelSpan.textContent = t(m.label);
+            div.appendChild(valueSpan);
+            div.appendChild(labelSpan);
+            metricsGrid.appendChild(div);
+            animateNumber(valueSpan, m.value, 600);
+        });
+    } else {
+        metricsGrid.classList.add('hidden');
+    }
+
+    // Life progress bar (requires birth date AND life expectancy)
+    if (currentData.birthDate && currentData.lifeExpectancy) {
         const birthDate = new Date(currentData.birthDate);
         if (!isNaN(birthDate.getTime())) {
-            const progress = lifeProgress(birthDate, targetDate);
+            const endDate = lifeEndDate(birthDate, currentData.lifeExpectancy);
+            const progress = lifeProgress(birthDate, endDate);
             const percent = Math.round(progress * 100);
 
             progressContainer.classList.remove('hidden');
 
-            // Animate progress bar with slight delay for visual effect
             setTimeout(() => {
                 progressFill.style.width = percent + '%';
             }, 200);

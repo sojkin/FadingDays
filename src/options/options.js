@@ -8,6 +8,11 @@ import { SUPPORTED_LANGUAGES, setLanguage, t, applyTranslations } from '../core/
 // --- DOM Elements ---
 const languageSelect = document.getElementById('languageSelect');
 const birthDateInput = document.getElementById('birthDate');
+const lifeExpectancyInput = document.getElementById('lifeExpectancy');
+const metricWeekends = document.getElementById('metricWeekends');
+const metricChristmas = document.getElementById('metricChristmas');
+const metricEasters = document.getElementById('metricEasters');
+const metricVacations = document.getElementById('metricVacations');
 const targetsList = document.getElementById('targetsList');
 const addTargetBtn = document.getElementById('addTarget');
 const saveStatusEl = document.getElementById('saveStatus');
@@ -38,18 +43,31 @@ function renderTargets() {
     targetsList.innerHTML = '';
 
     data.targets.forEach((target, index) => {
+        const isDefault = target.isDefault === true;
         const card = document.createElement('div');
-        card.className = 'target-card' + (index === 0 ? ' is-default' : '');
+        card.className = 'target-card' + (isDefault ? ' is-default' : '');
 
-        // Card header with badge and delete button
+        // Card header with badge and actions
         const header = document.createElement('div');
         header.className = 'target-card-header';
 
         const badge = document.createElement('span');
         badge.className = 'target-badge';
-        badge.textContent =
-            index === 0 ? t('defaultBadge') : t('targetBadge', { n: index + 1 });
+        badge.textContent = isDefault ? t('defaultBadge') : t('targetBadge', { n: index + 1 });
         header.appendChild(badge);
+
+        const headerActions = document.createElement('div');
+        headerActions.style.display = 'flex';
+        headerActions.style.gap = '8px';
+
+        // Set as default button (only for non-default targets)
+        if (!isDefault) {
+            const defaultBtn = document.createElement('button');
+            defaultBtn.className = 'btn-set-default';
+            defaultBtn.textContent = t('setAsDefault');
+            defaultBtn.addEventListener('click', () => setDefaultTarget(index));
+            headerActions.appendChild(defaultBtn);
+        }
 
         // Delete button (only if more than one target exists)
         if (data.targets.length > 1) {
@@ -57,12 +75,31 @@ function renderTargets() {
             deleteBtn.className = 'btn-delete';
             deleteBtn.textContent = t('deleteTarget');
             deleteBtn.addEventListener('click', () => deleteTarget(index));
-            header.appendChild(deleteBtn);
+            headerActions.appendChild(deleteBtn);
         }
 
+        header.appendChild(headerActions);
         card.appendChild(header);
 
-        // Input fields (name + date)
+        // Mode toggle (date / age)
+        const modeToggle = document.createElement('div');
+        modeToggle.className = 'mode-toggle';
+
+        const modeDateBtn = document.createElement('button');
+        modeDateBtn.className = 'mode-btn' + (target.mode !== 'age' ? ' active' : '');
+        modeDateBtn.textContent = t('modeDate');
+        modeDateBtn.type = 'button';
+
+        const modeAgeBtn = document.createElement('button');
+        modeAgeBtn.className = 'mode-btn' + (target.mode === 'age' ? ' active' : '');
+        modeAgeBtn.textContent = t('modeAge');
+        modeAgeBtn.type = 'button';
+
+        modeToggle.appendChild(modeDateBtn);
+        modeToggle.appendChild(modeAgeBtn);
+        card.appendChild(modeToggle);
+
+        // Input fields (name + date/age)
         const fields = document.createElement('div');
         fields.className = 'target-fields';
 
@@ -93,9 +130,53 @@ function renderTargets() {
         dateInput.value = target.date || '';
         dateField.appendChild(dateLabel);
         dateField.appendChild(dateInput);
-        fields.appendChild(dateField);
 
+        // Age field
+        const ageField = document.createElement('div');
+        ageField.className = 'field';
+        const ageLabel = document.createElement('label');
+        ageLabel.className = 'label';
+        ageLabel.textContent = t('targetAge');
+        const ageInput = document.createElement('input');
+        ageInput.type = 'number';
+        ageInput.className = 'input';
+        ageInput.min = '1';
+        ageInput.max = '150';
+        ageInput.value = target.targetAge || '';
+        ageField.appendChild(ageLabel);
+        ageField.appendChild(ageInput);
+
+        // Warning if age mode without birth date
+        const ageWarning = document.createElement('span');
+        ageWarning.className = 'age-warning';
+        ageWarning.textContent = t('requiresBirthDate');
+        ageField.appendChild(ageWarning);
+
+        // Show/hide based on mode
+        if (target.mode === 'age') {
+            dateField.style.display = 'none';
+            ageField.style.display = '';
+            ageWarning.style.display = data.birthDate ? 'none' : '';
+        } else {
+            dateField.style.display = '';
+            ageField.style.display = 'none';
+        }
+
+        fields.appendChild(dateField);
+        fields.appendChild(ageField);
         card.appendChild(fields);
+
+        // Mode toggle handlers
+        modeDateBtn.addEventListener('click', () => {
+            data.targets[index].mode = 'date';
+            renderTargets();
+            autoSave();
+        });
+        modeAgeBtn.addEventListener('click', () => {
+            data.targets[index].mode = 'age';
+            renderTargets();
+            autoSave();
+        });
 
         // Bind input change listeners for auto-save
         nameInput.addEventListener('input', () => {
@@ -105,6 +186,12 @@ function renderTargets() {
 
         dateInput.addEventListener('input', () => {
             data.targets[index].date = dateInput.value || null;
+            autoSave();
+        });
+
+        ageInput.addEventListener('input', () => {
+            const val = parseInt(ageInput.value, 10);
+            data.targets[index].targetAge = (val > 0 && val <= 150) ? val : null;
             autoSave();
         });
 
@@ -119,7 +206,9 @@ function addTarget() {
     const newTarget = {
         id: generateId(),
         name: '',
+        mode: 'date',
         date: null,
+        targetAge: null,
         isDefault: false,
     };
     data.targets.push(newTarget);
@@ -136,13 +225,29 @@ function addTarget() {
 }
 
 /**
+ * Set a target as the default.
+ * @param {number} index
+ */
+function setDefaultTarget(index) {
+    data.targets.forEach((t, i) => {
+        t.isDefault = i === index;
+    });
+    data.activeTargetId = data.targets[index].id;
+    renderTargets();
+    autoSave();
+}
+
+/**
  * Delete a target by index.
  * @param {number} index
  */
 function deleteTarget(index) {
     const removed = data.targets.splice(index, 1)[0];
 
-    // If the removed target was active, reset to first available
+    // If the removed target was default or active, reset to first available
+    if (removed.isDefault && data.targets.length > 0) {
+        data.targets[0].isDefault = true;
+    }
     if (data.activeTargetId === removed.id && data.targets.length > 0) {
         data.activeTargetId = data.targets[0].id;
     }
@@ -228,6 +333,40 @@ async function init() {
 
     birthDateInput.addEventListener('input', () => {
         data.birthDate = birthDateInput.value || null;
+        autoSave();
+    });
+
+    // Life expectancy
+    if (data.lifeExpectancy) {
+        lifeExpectancyInput.value = data.lifeExpectancy;
+    }
+
+    lifeExpectancyInput.addEventListener('input', () => {
+        const val = parseInt(lifeExpectancyInput.value, 10);
+        data.lifeExpectancy = (val > 0 && val <= 150) ? val : null;
+        autoSave();
+    });
+
+    // Metrics toggles
+    metricWeekends.checked = data.enabledMetrics.weekends;
+    metricChristmas.checked = data.enabledMetrics.christmasEves;
+    metricEasters.checked = data.enabledMetrics.easters;
+    metricVacations.checked = data.enabledMetrics.vacations;
+
+    metricWeekends.addEventListener('change', () => {
+        data.enabledMetrics.weekends = metricWeekends.checked;
+        autoSave();
+    });
+    metricChristmas.addEventListener('change', () => {
+        data.enabledMetrics.christmasEves = metricChristmas.checked;
+        autoSave();
+    });
+    metricEasters.addEventListener('change', () => {
+        data.enabledMetrics.easters = metricEasters.checked;
+        autoSave();
+    });
+    metricVacations.addEventListener('change', () => {
+        data.enabledMetrics.vacations = metricVacations.checked;
         autoSave();
     });
 

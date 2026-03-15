@@ -227,6 +227,16 @@ body {
     padding: 0 4px 4px;
 }
 
+.metrics[data-count="1"] {
+    grid-template-columns: 1fr;
+    max-width: 180px;
+    margin: 0 auto;
+}
+
+.metrics[data-count="3"] {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .metric {
     display: flex;
     flex-direction: column;

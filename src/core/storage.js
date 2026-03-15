@@ -6,11 +6,20 @@
 const DEFAULT_DATA = {
     language: 'en',
     birthDate: null,
+    lifeExpectancy: null,
+    enabledMetrics: {
+        weekends: true,
+        christmasEves: true,
+        easters: true,
+        vacations: true,
+    },
     targets: [
         {
             id: 'default',
             name: 'Retirement',
+            mode: 'date',
             date: null,
+            targetAge: null,
             isDefault: true,
         },
     ],
@@ -25,9 +34,22 @@ export async function loadData() {
     return new Promise((resolve) => {
         chrome.storage.sync.get('fadingDays', (result) => {
             const data = result.fadingDays || { ...DEFAULT_DATA };
-            // Ensure language field exists (migration for older data)
+            // Migration for older data
             if (!data.language) {
                 data.language = 'en';
+            }
+            if (!data.enabledMetrics) {
+                data.enabledMetrics = { weekends: true, christmasEves: true, easters: true, vacations: true };
+            }
+            if (data.lifeExpectancy === undefined) {
+                data.lifeExpectancy = null;
+            }
+            // Migrate targets: add mode + targetAge if missing
+            if (data.targets) {
+                data.targets.forEach(t => {
+                    if (!t.mode) t.mode = 'date';
+                    if (t.targetAge === undefined) t.targetAge = null;
+                });
             }
             resolve(data);
         });

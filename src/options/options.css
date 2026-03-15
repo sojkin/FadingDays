@@ -334,6 +334,127 @@ select.input option {
     user-select: none;
 }
 
+/* --- Toggle switches --- */
+.metrics-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.toggle-row:hover {
+    background: var(--bg-secondary);
+}
+
+.toggle-input {
+    display: none;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.toggle-input:checked + .toggle-switch {
+    background: var(--accent);
+}
+
+.toggle-input:checked + .toggle-switch::after {
+    left: 21px;
+    background: #fff;
+}
+
+.toggle-label {
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+/* --- Mode toggle (segmented control) --- */
+.mode-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+}
+
+.mode-btn {
+    background: var(--bg-card);
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mode-btn.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.mode-btn:not(.active):hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* --- Age warning --- */
+.age-warning {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 4px;
+}
+
+/* --- Set as default button --- */
+.btn-set-default {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-set-default:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
     width: 6px;

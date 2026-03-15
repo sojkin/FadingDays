@@ -147,6 +147,33 @@ export function computeAll(targetDate) {
 }
 
 /**
+ * Computes the estimated end-of-life date based on birth date and life expectancy.
+ * @param {Date} birthDate
+ * @param {number} lifeExpectancyYears
+ * @returns {Date}
+ */
+export function lifeEndDate(birthDate, lifeExpectancyYears) {
+    const end = new Date(birthDate);
+    end.setFullYear(end.getFullYear() + lifeExpectancyYears);
+    return end;
+}
+
+/**
+ * Resolves the effective target date based on target mode.
+ * In 'age' mode, computes birthDate + targetAge years.
+ * In 'date' mode, returns the stored date.
+ * @param {object} target - Target object with mode, date, targetAge
+ * @param {string|null} birthDate - Birth date string (ISO)
+ * @returns {Date|null}
+ */
+export function resolveTargetDate(target, birthDate) {
+    if (target.mode === 'age' && target.targetAge && birthDate) {
+        return lifeEndDate(new Date(birthDate), target.targetAge);
+    }
+    return target.date ? new Date(target.date) : null;
+}
+
+/**
  * Computes life progress (0–1) based on birth date and target date.
  * @param {Date} birthDate
  * @param {Date} targetDate

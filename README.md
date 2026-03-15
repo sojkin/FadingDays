@@ -15,7 +15,7 @@ It calculates not just the remaining days, but also the number of **weekends**, 
   - Remaining Christmas Eves (December 24)
   - Remaining Easter Sundays (computed via the Gauss algorithm)
   - Remaining summer vacations (July 1)
-- **Life progress bar** — Optionally enter your date of birth to see a fading progress bar showing how much of your life (relative to the target) has already passed.
+- **Life progress bar** — Enter your date of birth and statistical life expectancy to see a fading progress bar showing how much of your life has statistically already passed.
 - **Cloud sync** — All settings are stored via `chrome.storage.sync`, so your data follows you across devices logged into the same browser account.
 - **Multi-language support** — Available in 7 languages:
   - 🇬🇧 English
@@ -27,6 +27,9 @@ It calculates not just the remaining days, but also the number of **weekends**, 
   - 🇨🇳 中文 (Chinese)
 
   Language can be changed at any time in the extension's settings page. The extension name and description are also translated natively via Chrome's `_locales` system for better discoverability in Chrome Web Store.
+- **Configurable metrics** — Choose which countdowns to display in the popup. Toggle weekends, Christmas Eves, Easters, and vacations on or off independently.
+- **Default target** — Set any target as the default one shown when the popup opens, not just the first in the list.
+- **Two target modes** — Define each target by a specific **date** or by **age** (e.g., retirement at 65). In age mode, the target date is automatically calculated from your date of birth.
 - **Dark, minimal design** — A somber, thoughtful aesthetic with a deep dark background, muted copper accent color, monospace number fonts, and smooth fade-in animations.
 
 ---
@@ -37,15 +40,18 @@ It calculates not just the remaining days, but also the number of **weekends**, 
 When you click the extension icon, you see:
 1. **Header** — Current target name with navigation arrows (if multiple targets exist).
 2. **Main counter** — Large, prominent number of remaining days in accent color.
-3. **Life progress bar** — Subtle fading bar (visible only if birth date is set).
-4. **Metrics grid** — 2×2 grid showing weekends, Christmas Eves, Easters, and vacations.
+3. **Life progress bar** — Subtle fading bar (visible only if birth date and life expectancy are set).
+4. **Metrics grid** — Dynamic grid showing only the enabled metrics (weekends, Christmas Eves, Easters, vacations).
 5. **Settings button** — Gear icon in the footer leading to the options page.
 
 ### Options page
 A full-page settings interface where you can:
 - Select your preferred **language** (7 languages available).
-- Enter your **date of birth** (optional, for the life progress bar).
-- Manage **target dates** — add, edit, rename, or delete countdown targets.
+- Enter your **date of birth** (optional, used for age-based targets and the life progress bar).
+- Set your **statistical life expectancy** (optional, enables the life progress bar).
+- Toggle **visible metrics** — choose which countdowns (weekends, Christmas Eves, Easters, vacations) appear in the popup.
+- Manage **target dates** — add, edit, rename, or delete countdown targets. Each target can use **date mode** (specific date) or **age mode** (target age, calculated from birth date).
+- **Set any target as default** — the default target is shown when the popup opens.
 - Links to **GitHub** repository and **Buy Me a Coffee** in the footer.
 
 ---
