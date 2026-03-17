@@ -395,6 +395,29 @@ select.input option {
     color: var(--text-primary);
 }
 
+/* --- Drag handle --- */
+.drag-handle {
+    font-size: 16px;
+    color: var(--text-muted);
+    cursor: grab;
+    user-select: none;
+    line-height: 1;
+    padding: 0 2px;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.toggle-row.dragging {
+    opacity: 0.4;
+}
+
+.toggle-row.drag-over {
+    border-top: 2px solid var(--accent);
+    padding-top: 6px;
+}
+
 /* --- Mode toggle (segmented control) --- */
 .mode-toggle {
     display: flex;

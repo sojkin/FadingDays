@@ -13,7 +13,7 @@
     },
     "name": "__MSG_extensionName__",
     "short_name": "__MSG_extensionShortName__",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "__MSG_extensionDescription__",
     "default_locale": "en",
     "homepage_url": "https://github.com/sojkin/FadingDays",
@@ -24,7 +24,7 @@
         "https://date.nager.at/*"
     ],
     "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'none'; connect-src https://date.nager.at"
+        "extension_pages": "script-src 'self'; style-src 'self'; object-src 'none'; connect-src https://date.nager.at"
     },
     "action": {
         "default_popup": "src/popup/popup.html",

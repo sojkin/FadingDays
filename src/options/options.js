@@ -10,13 +10,7 @@ import { fetchAvailableCountries, getCountryFromLocale } from '../core/holidays.
 const languageSelect = document.getElementById('languageSelect');
 const birthDateInput = document.getElementById('birthDate');
 const lifeExpectancyInput = document.getElementById('lifeExpectancy');
-const metricWeekends = document.getElementById('metricWeekends');
-const metricChristmas = document.getElementById('metricChristmas');
-const metricEasters = document.getElementById('metricEasters');
-const metricVacations = document.getElementById('metricVacations');
-const metricPublicHolidays = document.getElementById('metricPublicHolidays');
-const metricWorkingDays = document.getElementById('metricWorkingDays');
-const metricDaysOff = document.getElementById('metricDaysOff');
+const metricsTogglesEl = document.getElementById('metricsToggles');
 const countrySelect = document.getElementById('countrySelect');
 const countrySection = document.getElementById('countrySection');
 const targetsList = document.getElementById('targetsList');
@@ -25,12 +19,116 @@ const saveStatusEl = document.getElementById('saveStatus');
 
 let data = null;
 let saveTimeout = null;
+let draggedMetric = null;
+
+// i18n label keys for each metric
+const METRIC_LABELS = {
+    weekends: 'weekends',
+    christmasEves: 'christmasEves',
+    easters: 'easters',
+    vacations: 'vacations',
+    publicHolidays: 'publicHolidays',
+    workingDays: 'workingDays',
+    daysOff: 'daysOff',
+};
+
+// Metrics that require country/holiday data
+const HOLIDAY_METRICS = ['publicHolidays', 'workingDays', 'daysOff'];
+
+/**
+ * Render metrics toggle rows dynamically in metricsOrder with drag & drop.
+ */
+function renderMetricsToggles() {
+    metricsTogglesEl.replaceChildren();
+
+    data.metricsOrder.forEach((key) => {
+        const row = document.createElement('label');
+        row.className = 'toggle-row';
+        row.draggable = true;
+        row.dataset.metric = key;
+
+        // Drag handle
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.textContent = '\u2807'; // ⠇ braille dots
+        row.appendChild(handle);
+
+        // Checkbox
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'toggle-input';
+        input.checked = !!data.enabledMetrics[key];
+        row.appendChild(input);
+
+        // Toggle switch visual
+        const sw = document.createElement('span');
+        sw.className = 'toggle-switch';
+        row.appendChild(sw);
+
+        // Label
+        const label = document.createElement('span');
+        label.className = 'toggle-label';
+        label.textContent = t(METRIC_LABELS[key]);
+        row.appendChild(label);
+
+        // Toggle change handler
+        input.addEventListener('change', () => {
+            data.enabledMetrics[key] = input.checked;
+            updateCountrySectionVisibility();
+            autoSave();
+        });
+
+        // Drag & drop handlers
+        row.addEventListener('dragstart', (e) => {
+            draggedMetric = key;
+            row.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        row.addEventListener('dragend', () => {
+            row.classList.remove('dragging');
+            draggedMetric = null;
+            metricsTogglesEl.querySelectorAll('.toggle-row').forEach(r => r.classList.remove('drag-over'));
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (key !== draggedMetric) {
+                metricsTogglesEl.querySelectorAll('.toggle-row').forEach(r => r.classList.remove('drag-over'));
+                row.classList.add('drag-over');
+            }
+        });
+
+        row.addEventListener('dragleave', () => {
+            row.classList.remove('drag-over');
+        });
+
+        row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.classList.remove('drag-over');
+            if (!draggedMetric || draggedMetric === key || !data.metricsOrder.includes(draggedMetric)) return;
+
+            const oldIndex = data.metricsOrder.indexOf(draggedMetric);
+            const newIndex = data.metricsOrder.indexOf(key);
+            if (oldIndex < 0 || newIndex < 0) return;
+
+            data.metricsOrder.splice(oldIndex, 1);
+            data.metricsOrder.splice(newIndex, 0, draggedMetric);
+
+            renderMetricsToggles();
+            autoSave();
+        });
+
+        metricsTogglesEl.appendChild(row);
+    });
+}
 
 /**
  * Populate the language dropdown with supported languages.
  */
 function populateLanguageSelect() {
-    languageSelect.innerHTML = '';
+    languageSelect.replaceChildren();
     for (const lang of SUPPORTED_LANGUAGES) {
         const option = document.createElement('option');
         option.value = lang.code;
@@ -46,7 +144,7 @@ function populateLanguageSelect() {
  * Render the list of target cards.
  */
 function renderTargets() {
-    targetsList.innerHTML = '';
+    targetsList.replaceChildren();
 
     data.targets.forEach((target, index) => {
         const isDefault = target.isDefault === true;
@@ -305,7 +403,7 @@ async function populateCountrySelect() {
     const detectedCountry = getCountryFromLocale();
     const selectedCountry = data.country || '';
 
-    countrySelect.innerHTML = '';
+    countrySelect.replaceChildren();
 
     // Auto option
     const autoOption = document.createElement('option');
@@ -329,6 +427,7 @@ async function populateCountrySelect() {
  */
 function refreshUI() {
     applyTranslations();
+    renderMetricsToggles();
     renderTargets();
 }
 
@@ -377,50 +476,8 @@ async function init() {
         autoSave();
     });
 
-    // Metrics toggles
-    metricWeekends.checked = data.enabledMetrics.weekends;
-    metricChristmas.checked = data.enabledMetrics.christmasEves;
-    metricEasters.checked = data.enabledMetrics.easters;
-    metricVacations.checked = data.enabledMetrics.vacations;
-
-    metricWeekends.addEventListener('change', () => {
-        data.enabledMetrics.weekends = metricWeekends.checked;
-        autoSave();
-    });
-    metricChristmas.addEventListener('change', () => {
-        data.enabledMetrics.christmasEves = metricChristmas.checked;
-        autoSave();
-    });
-    metricEasters.addEventListener('change', () => {
-        data.enabledMetrics.easters = metricEasters.checked;
-        autoSave();
-    });
-    metricVacations.addEventListener('change', () => {
-        data.enabledMetrics.vacations = metricVacations.checked;
-        autoSave();
-    });
-
-    // Public holidays & working days toggles
-    metricPublicHolidays.checked = data.enabledMetrics.publicHolidays;
-    metricWorkingDays.checked = data.enabledMetrics.workingDays;
-
-    metricPublicHolidays.addEventListener('change', () => {
-        data.enabledMetrics.publicHolidays = metricPublicHolidays.checked;
-        updateCountrySectionVisibility();
-        autoSave();
-    });
-    metricWorkingDays.addEventListener('change', () => {
-        data.enabledMetrics.workingDays = metricWorkingDays.checked;
-        updateCountrySectionVisibility();
-        autoSave();
-    });
-
-    metricDaysOff.checked = data.enabledMetrics.daysOff;
-    metricDaysOff.addEventListener('change', () => {
-        data.enabledMetrics.daysOff = metricDaysOff.checked;
-        updateCountrySectionVisibility();
-        autoSave();
-    });
+    // Metrics toggles (dynamic, drag & drop)
+    renderMetricsToggles();
 
     // Country selector
     updateCountrySectionVisibility();

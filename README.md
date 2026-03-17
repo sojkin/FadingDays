@@ -10,14 +10,14 @@ It calculates not just the remaining days, but also the number of **weekends**, 
 
 - **Multiple countdown targets** — Set a primary goal (e.g., retirement) and additional targets (e.g., mortgage payoff, 40th birthday). Switch between them with navigation arrows.
 - **Rich metrics** — For each target, see:
-  - Total remaining days
-  - Remaining weekends (full Saturday + Sunday pairs)
-  - Remaining Christmas Eves (December 24)
-  - Remaining Easter Sundays (computed via the Gauss algorithm)
-  - Remaining summer vacations (July 1)
-  - Remaining public holidays (fetched from [Nager.Date API](https://date.nager.at/))
-  - Remaining working days (excludes weekends and public holidays)
-  - Remaining days off (weekends + public holidays on weekdays)
+  - **Total remaining days** — calendar days from today to the target date
+  - **Weekends** — full Saturday + Sunday pairs remaining
+  - **Christmas Eves** — how many December 24ths fall between now and the target
+  - **Easters** — Easter Sundays remaining, computed via the Gauss algorithm
+  - **Vacations** — how many July 1sts (start of summer) fall in the range
+  - **Public holidays** — all official public holidays for your country (including those on weekends), fetched from [Nager.Date API](https://date.nager.at/)
+  - **Working days** — weekdays minus public holidays that fall on weekdays (Mon–Fri)
+  - **Days off** — all non-working days: Saturdays, Sundays, and public holidays that fall on weekdays
 - **Public holidays via Nager.Date API** — The extension uses the free [Nager.Date API](https://date.nager.at/) to fetch public holidays for your country. Holiday data is cached locally for 30 days to minimize network requests. Your country is auto-detected from the browser locale, but can be changed manually in settings. Over 100 countries are supported.
 - **Life progress bar** — Enter your date of birth and statistical life expectancy to see a fading progress bar showing how much of your life has statistically already passed.
 - **Cloud sync** — All settings are stored via `chrome.storage.sync`, so your data follows you across devices logged into the same browser account.
@@ -32,6 +32,7 @@ It calculates not just the remaining days, but also the number of **weekends**, 
 
   Language can be changed at any time in the extension's settings page. The extension name and description are also translated natively via Chrome's `_locales` system for better discoverability in Chrome Web Store.
 - **Configurable metrics** — Choose which countdowns to display in the popup. Toggle weekends, Christmas Eves, Easters, vacations, public holidays, working days, and days off on or off independently.
+- **Custom metrics order** — Drag and drop metrics in the settings page to reorder how they appear in the popup.
 - **Default target** — Set any target as the default one shown when the popup opens, not just the first in the list.
 - **Two target modes** — Define each target by a specific **date** or by **age** (e.g., retirement at 65). In age mode, the target date is automatically calculated from your date of birth.
 - **Dark, minimal design** — A somber, thoughtful aesthetic with a deep dark background, muted copper accent color, monospace number fonts, and smooth fade-in animations.
@@ -53,7 +54,7 @@ A full-page settings interface where you can:
 - Select your preferred **language** (7 languages available).
 - Enter your **date of birth** (optional, used for age-based targets and the life progress bar).
 - Set your **statistical life expectancy** (optional, enables the life progress bar).
-- Toggle **visible metrics** — choose which countdowns (weekends, Christmas Eves, Easters, vacations, public holidays, working days, days off) appear in the popup.
+- Toggle **visible metrics** — choose which countdowns (weekends, Christmas Eves, Easters, vacations, public holidays, working days, days off) appear in the popup. Drag and drop to reorder.
 - Select your **country** — auto-detected from the browser or set manually. Used to fetch public holidays from the Nager.Date API.
 - Manage **target dates** — add, edit, rename, or delete countdown targets. Each target can use **date mode** (specific date) or **age mode** (target age, calculated from birth date).
 - **Set any target as default** — the default target is shown when the popup opens.

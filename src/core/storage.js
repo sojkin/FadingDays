@@ -8,6 +8,7 @@ const DEFAULT_DATA = {
     birthDate: null,
     lifeExpectancy: null,
     country: null, // null = auto-detect from locale
+    metricsOrder: ['weekends', 'christmasEves', 'easters', 'vacations', 'publicHolidays', 'workingDays', 'daysOff'],
     enabledMetrics: {
         weekends: true,
         christmasEves: true,
@@ -37,6 +38,10 @@ const DEFAULT_DATA = {
 export async function loadData() {
     return new Promise((resolve) => {
         chrome.storage.sync.get('fadingDays', (result) => {
+            if (chrome.runtime.lastError) {
+                resolve({ ...DEFAULT_DATA });
+                return;
+            }
             const data = result.fadingDays || { ...DEFAULT_DATA };
             // Migration for older data
             if (!data.language) {
@@ -56,6 +61,16 @@ export async function loadData() {
             }
             if (data.country === undefined) {
                 data.country = null;
+            }
+            if (!data.metricsOrder) {
+                data.metricsOrder = ['weekends', 'christmasEves', 'easters', 'vacations', 'publicHolidays', 'workingDays', 'daysOff'];
+            }
+            // Ensure new metrics are in the order array
+            const allMetrics = ['weekends', 'christmasEves', 'easters', 'vacations', 'publicHolidays', 'workingDays', 'daysOff'];
+            for (const m of allMetrics) {
+                if (!data.metricsOrder.includes(m)) {
+                    data.metricsOrder.push(m);
+                }
             }
             if (data.lifeExpectancy === undefined) {
                 data.lifeExpectancy = null;
@@ -79,7 +94,10 @@ export async function loadData() {
  */
 export async function saveData(data) {
     return new Promise((resolve) => {
-        chrome.storage.sync.set({ fadingDays: data }, resolve);
+        chrome.storage.sync.set({ fadingDays: data }, () => {
+            if (chrome.runtime.lastError) { /* ignore */ }
+            resolve();
+        });
     });
 }
 
@@ -107,5 +125,5 @@ export async function setActiveTarget(targetId) {
  * @returns {string}
  */
 export function generateId() {
-    return 'target_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'target_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
 }

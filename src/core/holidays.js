@@ -37,6 +37,10 @@ export function getCountryFromLocale() {
 async function getCache(key, ttl) {
     return new Promise((resolve) => {
         chrome.storage.local.get(key, (result) => {
+            if (chrome.runtime.lastError) {
+                resolve(null);
+                return;
+            }
             const entry = result[key];
             if (entry && entry.timestamp && (Date.now() - entry.timestamp < ttl)) {
                 resolve(entry.data);
@@ -55,7 +59,10 @@ async function getCache(key, ttl) {
  */
 async function setCache(key, data) {
     return new Promise((resolve) => {
-        chrome.storage.local.set({ [key]: { data, timestamp: Date.now() } }, resolve);
+        chrome.storage.local.set({ [key]: { data, timestamp: Date.now() } }, () => {
+            if (chrome.runtime.lastError) { /* ignore quota errors */ }
+            resolve();
+        });
     });
 }
 
@@ -127,8 +134,10 @@ export async function fetchAvailableCountries() {
         const resp = await fetch(`${API_BASE}/AvailableCountries`);
         if (!resp.ok) return [];
         const countries = await resp.json();
-        await setCache(cacheKey, countries);
-        return countries;
+        if (!Array.isArray(countries)) return [];
+        const valid = countries.filter(c => typeof c.countryCode === 'string' && typeof c.name === 'string');
+        await setCache(cacheKey, valid);
+        return valid;
     } catch {
         return [];
     }

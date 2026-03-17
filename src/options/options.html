@@ -51,42 +51,8 @@
         <section class="section">
             <h2 class="section-title" data-i18n="metricsSection"></h2>
             <p class="section-desc" data-i18n="metricsDesc"></p>
-            <div class="metrics-toggles">
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricWeekends" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="weekends"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricChristmas" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="christmasEves"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricEasters" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="easters"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricVacations" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="vacations"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricPublicHolidays" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="publicHolidays"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricWorkingDays" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="workingDays"></span>
-                </label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="metricDaysOff" class="toggle-input">
-                    <span class="toggle-switch"></span>
-                    <span class="toggle-label" data-i18n="daysOff"></span>
-                </label>
+            <div id="metricsToggles" class="metrics-toggles">
+                <!-- Rendered dynamically in options.js based on metricsOrder -->
             </div>
         </section>
 

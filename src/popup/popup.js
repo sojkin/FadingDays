@@ -98,36 +98,33 @@ async function render() {
     const metrics = computeAll(targetDate);
     animateNumber(daysCountEl, metrics.days, 800);
 
-    // Build dynamic metrics grid
+    // Build dynamic metrics grid in user-defined order
     const enabled = currentData.enabledMetrics || {};
-    const metricDefs = [
-        { key: 'weekends', value: metrics.weekends, label: 'weekends' },
-        { key: 'christmasEves', value: metrics.christmasEves, label: 'christmasEves' },
-        { key: 'easters', value: metrics.easters, label: 'easters' },
-        { key: 'vacations', value: metrics.vacations, label: 'vacations' },
-    ];
+    const order = currentData.metricsOrder || ['weekends', 'christmasEves', 'easters', 'vacations', 'publicHolidays', 'workingDays', 'daysOff'];
 
-    // Fetch holidays if needed for publicHolidays or workingDays metrics
+    // Fetch holidays if needed
     const needsHolidays = enabled.publicHolidays || enabled.workingDays || enabled.daysOff;
     let holidaySet = new Set();
+    const today = getToday();
     if (needsHolidays) {
-        const today = getToday();
         const country = currentData.country || getCountryFromLocale();
         holidaySet = await getHolidaysForRange(country, today, targetDate);
-        if (enabled.publicHolidays) {
-            metricDefs.push({ key: 'publicHolidays', value: publicHolidaysRemaining(today, targetDate, holidaySet), label: 'publicHolidays' });
-        }
-        if (enabled.workingDays) {
-            metricDefs.push({ key: 'workingDays', value: workingDaysRemaining(today, targetDate, holidaySet), label: 'workingDays' });
-        }
-        if (enabled.daysOff) {
-            metricDefs.push({ key: 'daysOff', value: daysOffRemaining(today, targetDate, holidaySet), label: 'daysOff' });
-        }
     }
 
-    const activeMetrics = metricDefs.filter(m => enabled[m.key]);
+    // All possible metrics with their computed values
+    const allMetrics = {
+        weekends: { value: metrics.weekends, label: 'weekends' },
+        christmasEves: { value: metrics.christmasEves, label: 'christmasEves' },
+        easters: { value: metrics.easters, label: 'easters' },
+        vacations: { value: metrics.vacations, label: 'vacations' },
+        publicHolidays: { value: publicHolidaysRemaining(today, targetDate, holidaySet), label: 'publicHolidays' },
+        workingDays: { value: workingDaysRemaining(today, targetDate, holidaySet), label: 'workingDays' },
+        daysOff: { value: daysOffRemaining(today, targetDate, holidaySet), label: 'daysOff' },
+    };
 
-    metricsGrid.innerHTML = '';
+    const activeMetrics = order.filter(key => enabled[key] && allMetrics[key]).map(key => ({ key, ...allMetrics[key] }));
+
+    metricsGrid.replaceChildren();
     if (activeMetrics.length > 0) {
         metricsGrid.classList.remove('hidden');
         metricsGrid.setAttribute('data-count', activeMetrics.length);
