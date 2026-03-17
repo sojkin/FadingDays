@@ -131,6 +131,73 @@ export function vacationsRemaining(from, to) {
 }
 
 /**
+ * Computes the number of public holidays (weekdays only) between dates.
+ * @param {Date} from
+ * @param {Date} to
+ * @param {Set<string>} holidaySet - Set of "YYYY-MM-DD" date strings
+ * @returns {number}
+ */
+export function publicHolidaysRemaining(from, to, holidaySet) {
+    if (!holidaySet || holidaySet.size === 0) return 0;
+    let count = 0;
+    for (const dateStr of holidaySet) {
+        const d = new Date(dateStr);
+        if (d > from && d <= to) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
+ * Computes working days between dates.
+ * Working days = total days - weekend days (Sat+Sun) - public holidays on weekdays.
+ * @param {Date} from
+ * @param {Date} to
+ * @param {Set<string>} holidaySet - Set of "YYYY-MM-DD" date strings
+ * @returns {number}
+ */
+export function workingDaysRemaining(from, to, holidaySet) {
+    const total = daysRemaining(from, to);
+    if (total <= 0) return 0;
+
+    let weekendDays = 0;
+    let holidaysOnWeekdays = 0;
+    const current = new Date(from);
+    current.setDate(current.getDate() + 1); // start from day after 'from'
+
+    for (let i = 0; i < total; i++) {
+        const day = current.getDay();
+        const isWeekend = day === 0 || day === 6;
+        if (isWeekend) {
+            weekendDays++;
+        } else if (holidaySet && holidaySet.size > 0) {
+            const y = current.getFullYear();
+            const m = String(current.getMonth() + 1).padStart(2, '0');
+            const d = String(current.getDate()).padStart(2, '0');
+            if (holidaySet.has(`${y}-${m}-${d}`)) {
+                holidaysOnWeekdays++;
+            }
+        }
+        current.setDate(current.getDate() + 1);
+    }
+
+    return total - weekendDays - holidaysOnWeekdays;
+}
+
+/**
+ * Computes non-working days: weekends + public holidays falling on weekdays.
+ * @param {Date} from
+ * @param {Date} to
+ * @param {Set<string>} holidaySet - Set of "YYYY-MM-DD" date strings
+ * @returns {number}
+ */
+export function daysOffRemaining(from, to, holidaySet) {
+    const total = daysRemaining(from, to);
+    return total - workingDaysRemaining(from, to, holidaySet);
+}
+
+/**
  * Computes all metrics for a given target date.
  * @param {Date} targetDate
  * @returns {{ days: number, weekends: number, christmasEves: number, easters: number, vacations: number }}

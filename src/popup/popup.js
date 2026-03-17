@@ -2,9 +2,10 @@
  * Fading Days – Popup Logic
  * Displays countdown metrics and handles target navigation.
  */
-import { computeAll, lifeProgress, lifeEndDate, resolveTargetDate } from '../core/calculations.js';
+import { computeAll, lifeProgress, lifeEndDate, resolveTargetDate, publicHolidaysRemaining, workingDaysRemaining, daysOffRemaining, getToday } from '../core/calculations.js';
 import { loadData, setActiveTarget } from '../core/storage.js';
 import { setLanguage, t, applyTranslations } from '../core/i18n.js';
+import { getHolidaysForRange, getCountryFromLocale } from '../core/holidays.js';
 
 // --- DOM Elements ---
 const targetNameEl = document.getElementById('targetName');
@@ -41,7 +42,7 @@ function animateNumber(element, targetValue, duration = 600) {
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
 
-        element.textContent = current.toLocaleString();
+        element.textContent = current.toString();
 
         if (progress < 1) {
             requestAnimationFrame(update);
@@ -59,7 +60,7 @@ function animateNumber(element, targetValue, duration = 600) {
 /**
  * Render the popup UI based on current data and active target.
  */
-function render() {
+async function render() {
     if (!currentData || !currentData.targets || currentData.targets.length === 0) {
         showEmpty();
         return;
@@ -98,13 +99,32 @@ function render() {
     animateNumber(daysCountEl, metrics.days, 800);
 
     // Build dynamic metrics grid
-    const enabled = currentData.enabledMetrics || { weekends: true, christmasEves: true, easters: true, vacations: true };
+    const enabled = currentData.enabledMetrics || {};
     const metricDefs = [
         { key: 'weekends', value: metrics.weekends, label: 'weekends' },
         { key: 'christmasEves', value: metrics.christmasEves, label: 'christmasEves' },
         { key: 'easters', value: metrics.easters, label: 'easters' },
         { key: 'vacations', value: metrics.vacations, label: 'vacations' },
     ];
+
+    // Fetch holidays if needed for publicHolidays or workingDays metrics
+    const needsHolidays = enabled.publicHolidays || enabled.workingDays || enabled.daysOff;
+    let holidaySet = new Set();
+    if (needsHolidays) {
+        const today = getToday();
+        const country = currentData.country || getCountryFromLocale();
+        holidaySet = await getHolidaysForRange(country, today, targetDate);
+        if (enabled.publicHolidays) {
+            metricDefs.push({ key: 'publicHolidays', value: publicHolidaysRemaining(today, targetDate, holidaySet), label: 'publicHolidays' });
+        }
+        if (enabled.workingDays) {
+            metricDefs.push({ key: 'workingDays', value: workingDaysRemaining(today, targetDate, holidaySet), label: 'workingDays' });
+        }
+        if (enabled.daysOff) {
+            metricDefs.push({ key: 'daysOff', value: daysOffRemaining(today, targetDate, holidaySet), label: 'daysOff' });
+        }
+    }
+
     const activeMetrics = metricDefs.filter(m => enabled[m.key]);
 
     metricsGrid.innerHTML = '';

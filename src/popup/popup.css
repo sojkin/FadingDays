@@ -237,6 +237,14 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
+.metrics[data-count="5"] {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.metrics[data-count="6"] {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .metric {
     display: flex;
     flex-direction: column;
@@ -266,6 +274,7 @@ body {
     margin-top: 6px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    text-align: center;
 }
 
 /* --- Number roll animation --- */
@@ -300,6 +309,14 @@ body {
 
 .metric:nth-child(4) .metric-value {
     animation-delay: 0.4s;
+}
+
+.metric:nth-child(5) .metric-value {
+    animation-delay: 0.5s;
+}
+
+.metric:nth-child(6) .metric-value {
+    animation-delay: 0.6s;
 }
 
 /* --- Footer --- */

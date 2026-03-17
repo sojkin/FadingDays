@@ -72,6 +72,33 @@
                     <span class="toggle-switch"></span>
                     <span class="toggle-label" data-i18n="vacations"></span>
                 </label>
+                <label class="toggle-row">
+                    <input type="checkbox" id="metricPublicHolidays" class="toggle-input">
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-label" data-i18n="publicHolidays"></span>
+                </label>
+                <label class="toggle-row">
+                    <input type="checkbox" id="metricWorkingDays" class="toggle-input">
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-label" data-i18n="workingDays"></span>
+                </label>
+                <label class="toggle-row">
+                    <input type="checkbox" id="metricDaysOff" class="toggle-input">
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-label" data-i18n="daysOff"></span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Country selector (for public holidays) -->
+        <section id="countrySection" class="section">
+            <h2 class="section-title" data-i18n="countrySection"></h2>
+            <p class="section-desc" data-i18n="countryDesc"></p>
+            <div class="field">
+                <label for="countrySelect" class="label" data-i18n="countryLabel"></label>
+                <select id="countrySelect" class="input">
+                    <!-- Options populated dynamically -->
+                </select>
             </div>
         </section>
 

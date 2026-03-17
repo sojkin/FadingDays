@@ -2,7 +2,7 @@
 
 **Fading Days** is a minimalist browser extension for **Chrome** and **Firefox** that makes you aware of the passage of time by counting down to key moments in your life — retirement, milestones, or any date that matters to you.
 
-It calculates not just the remaining days, but also the number of **weekends**, **Christmas Eves**, **Easter Sundays**, and **summer vacations** left until your target date.
+It calculates not just the remaining days, but also the number of **weekends**, **Christmas Eves**, **Easter Sundays**, **summer vacations**, **public holidays**, **working days**, and **days off** left until your target date.
 
 ---
 
@@ -15,6 +15,10 @@ It calculates not just the remaining days, but also the number of **weekends**, 
   - Remaining Christmas Eves (December 24)
   - Remaining Easter Sundays (computed via the Gauss algorithm)
   - Remaining summer vacations (July 1)
+  - Remaining public holidays (fetched from [Nager.Date API](https://date.nager.at/))
+  - Remaining working days (excludes weekends and public holidays)
+  - Remaining days off (weekends + public holidays on weekdays)
+- **Public holidays via Nager.Date API** — The extension uses the free [Nager.Date API](https://date.nager.at/) to fetch public holidays for your country. Holiday data is cached locally for 30 days to minimize network requests. Your country is auto-detected from the browser locale, but can be changed manually in settings. Over 100 countries are supported.
 - **Life progress bar** — Enter your date of birth and statistical life expectancy to see a fading progress bar showing how much of your life has statistically already passed.
 - **Cloud sync** — All settings are stored via `chrome.storage.sync`, so your data follows you across devices logged into the same browser account.
 - **Multi-language support** — Available in 7 languages:
@@ -27,7 +31,7 @@ It calculates not just the remaining days, but also the number of **weekends**, 
   - 🇨🇳 中文 (Chinese)
 
   Language can be changed at any time in the extension's settings page. The extension name and description are also translated natively via Chrome's `_locales` system for better discoverability in Chrome Web Store.
-- **Configurable metrics** — Choose which countdowns to display in the popup. Toggle weekends, Christmas Eves, Easters, and vacations on or off independently.
+- **Configurable metrics** — Choose which countdowns to display in the popup. Toggle weekends, Christmas Eves, Easters, vacations, public holidays, working days, and days off on or off independently.
 - **Default target** — Set any target as the default one shown when the popup opens, not just the first in the list.
 - **Two target modes** — Define each target by a specific **date** or by **age** (e.g., retirement at 65). In age mode, the target date is automatically calculated from your date of birth.
 - **Dark, minimal design** — A somber, thoughtful aesthetic with a deep dark background, muted copper accent color, monospace number fonts, and smooth fade-in animations.
@@ -49,7 +53,8 @@ A full-page settings interface where you can:
 - Select your preferred **language** (7 languages available).
 - Enter your **date of birth** (optional, used for age-based targets and the life progress bar).
 - Set your **statistical life expectancy** (optional, enables the life progress bar).
-- Toggle **visible metrics** — choose which countdowns (weekends, Christmas Eves, Easters, vacations) appear in the popup.
+- Toggle **visible metrics** — choose which countdowns (weekends, Christmas Eves, Easters, vacations, public holidays, working days, days off) appear in the popup.
+- Select your **country** — auto-detected from the browser or set manually. Used to fetch public holidays from the Nager.Date API.
 - Manage **target dates** — add, edit, rename, or delete countdown targets. Each target can use **date mode** (specific date) or **age mode** (target age, calculated from birth date).
 - **Set any target as default** — the default target is shown when the popup opens.
 - Links to **GitHub** repository and **Buy Me a Coffee** in the footer.
@@ -62,10 +67,10 @@ A full-page settings interface where you can:
 |-----------------|--------------------------------|
 | Platform        | Chromium (Chrome, Edge, Opera, Brave, Vivaldi) + Firefox 109+ |
 | Manifest        | V3                             |
-| Permissions     | `storage` only                 |
+| Permissions     | `storage`, host access to `date.nager.at` |
 | Storage         | `chrome.storage.sync`          |
 | Build tools     | None required (vanilla JS), optional `build.sh` for packaging |
-| External deps   | Google Fonts (Inter, JetBrains Mono) loaded via CSS |
+| External deps   | Google Fonts (Inter, JetBrains Mono) via CSS, [Nager.Date API](https://date.nager.at/) for public holidays |
 
 ### Project Structure
 
@@ -90,7 +95,8 @@ FadingDays/
 │       └── icon128.png
 └── src/
     ├── core/                  # Shared modules
-    │   ├── calculations.js    # Countdown engine (days, weekends, holidays)
+    │   ├── calculations.js    # Countdown engine (days, weekends, holidays, working days)
+    │   ├── holidays.js        # Nager.Date API client with local caching
     │   ├── i18n.js            # UI internationalization (7 languages)
     │   └── storage.js         # chrome.storage.sync wrapper
     ├── popup/                 # Popup UI (shown on icon click)
@@ -108,6 +114,8 @@ FadingDays/
 - **Easter date calculation** — Uses the [Gauss Easter algorithm](https://en.wikipedia.org/wiki/Date_of_Easter#Anonymous_Gregorian_algorithm) to compute the movable date of Easter Sunday for any given year.
 - **Weekend counting** — Iterates from the current date, advancing to the nearest Saturday, then counts complete Saturday–Sunday pairs until the target date.
 - **Christmas Eve / Vacation counting** — Simple year-by-year iteration checking if December 24 or July 1 falls within the remaining date range.
+- **Public holidays** — Fetched per year from the [Nager.Date API](https://date.nager.at/api/v3/PublicHolidays/{year}/{countryCode}) and cached in `chrome.storage.local` for 30 days. Only years within the date range are fetched, and requests are parallelized. Country is auto-detected from `navigator.language` or set manually.
+- **Working days / Days off** — Computed by iterating day-by-day through the range, classifying each as weekend, weekday holiday, or working day.
 
 ---
 

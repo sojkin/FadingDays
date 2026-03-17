@@ -7,11 +7,15 @@ const DEFAULT_DATA = {
     language: 'en',
     birthDate: null,
     lifeExpectancy: null,
+    country: null, // null = auto-detect from locale
     enabledMetrics: {
         weekends: true,
         christmasEves: true,
         easters: true,
         vacations: true,
+        publicHolidays: false,
+        workingDays: false,
+        daysOff: false,
     },
     targets: [
         {
@@ -39,7 +43,19 @@ export async function loadData() {
                 data.language = 'en';
             }
             if (!data.enabledMetrics) {
-                data.enabledMetrics = { weekends: true, christmasEves: true, easters: true, vacations: true };
+                data.enabledMetrics = { weekends: true, christmasEves: true, easters: true, vacations: true, publicHolidays: false, workingDays: false };
+            }
+            if (data.enabledMetrics.publicHolidays === undefined) {
+                data.enabledMetrics.publicHolidays = false;
+            }
+            if (data.enabledMetrics.workingDays === undefined) {
+                data.enabledMetrics.workingDays = false;
+            }
+            if (data.enabledMetrics.daysOff === undefined) {
+                data.enabledMetrics.daysOff = false;
+            }
+            if (data.country === undefined) {
+                data.country = null;
             }
             if (data.lifeExpectancy === undefined) {
                 data.lifeExpectancy = null;

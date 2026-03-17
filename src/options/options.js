@@ -4,6 +4,7 @@
  */
 import { loadData, saveData, generateId } from '../core/storage.js';
 import { SUPPORTED_LANGUAGES, setLanguage, t, applyTranslations } from '../core/i18n.js';
+import { fetchAvailableCountries, getCountryFromLocale } from '../core/holidays.js';
 
 // --- DOM Elements ---
 const languageSelect = document.getElementById('languageSelect');
@@ -13,6 +14,11 @@ const metricWeekends = document.getElementById('metricWeekends');
 const metricChristmas = document.getElementById('metricChristmas');
 const metricEasters = document.getElementById('metricEasters');
 const metricVacations = document.getElementById('metricVacations');
+const metricPublicHolidays = document.getElementById('metricPublicHolidays');
+const metricWorkingDays = document.getElementById('metricWorkingDays');
+const metricDaysOff = document.getElementById('metricDaysOff');
+const countrySelect = document.getElementById('countrySelect');
+const countrySection = document.getElementById('countrySection');
 const targetsList = document.getElementById('targetsList');
 const addTargetBtn = document.getElementById('addTarget');
 const saveStatusEl = document.getElementById('saveStatus');
@@ -180,7 +186,7 @@ function renderTargets() {
 
         // Bind input change listeners for auto-save
         nameInput.addEventListener('input', () => {
-            data.targets[index].name = nameInput.value;
+            data.targets[index].name = nameInput.value.slice(0, 100);
             autoSave();
         });
 
@@ -190,8 +196,8 @@ function renderTargets() {
         });
 
         ageInput.addEventListener('input', () => {
-            const val = parseInt(ageInput.value, 10);
-            data.targets[index].targetAge = (val > 0 && val <= 150) ? val : null;
+            const val = Number(ageInput.value);
+            data.targets[index].targetAge = (Number.isInteger(val) && val > 0 && val <= 150) ? val : null;
             autoSave();
         });
 
@@ -284,14 +290,38 @@ function showSaveStatus() {
 }
 
 /**
- * Escape HTML entities to prevent XSS in dynamic content.
- * @param {string} str
- * @returns {string}
+ * Show/hide the country section based on whether holiday metrics are enabled.
  */
-function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+function updateCountrySectionVisibility() {
+    const needsCountry = data && (data.enabledMetrics.publicHolidays || data.enabledMetrics.workingDays || data.enabledMetrics.daysOff);
+    countrySection.style.display = needsCountry ? '' : 'none';
+}
+
+/**
+ * Populate the country dropdown with available countries from API.
+ */
+async function populateCountrySelect() {
+    const countries = await fetchAvailableCountries();
+    const detectedCountry = getCountryFromLocale();
+    const selectedCountry = data.country || '';
+
+    countrySelect.innerHTML = '';
+
+    // Auto option
+    const autoOption = document.createElement('option');
+    autoOption.value = '';
+    autoOption.textContent = t('countryAuto') + ` (${detectedCountry})`;
+    if (!selectedCountry) autoOption.selected = true;
+    countrySelect.appendChild(autoOption);
+
+    // Country list
+    for (const c of countries) {
+        const option = document.createElement('option');
+        option.value = c.countryCode;
+        option.textContent = `${c.name} (${c.countryCode})`;
+        if (c.countryCode === selectedCountry) option.selected = true;
+        countrySelect.appendChild(option);
+    }
 }
 
 /**
@@ -342,8 +372,8 @@ async function init() {
     }
 
     lifeExpectancyInput.addEventListener('input', () => {
-        const val = parseInt(lifeExpectancyInput.value, 10);
-        data.lifeExpectancy = (val > 0 && val <= 150) ? val : null;
+        const val = Number(lifeExpectancyInput.value);
+        data.lifeExpectancy = (Number.isInteger(val) && val > 0 && val <= 150) ? val : null;
         autoSave();
     });
 
@@ -367,6 +397,37 @@ async function init() {
     });
     metricVacations.addEventListener('change', () => {
         data.enabledMetrics.vacations = metricVacations.checked;
+        autoSave();
+    });
+
+    // Public holidays & working days toggles
+    metricPublicHolidays.checked = data.enabledMetrics.publicHolidays;
+    metricWorkingDays.checked = data.enabledMetrics.workingDays;
+
+    metricPublicHolidays.addEventListener('change', () => {
+        data.enabledMetrics.publicHolidays = metricPublicHolidays.checked;
+        updateCountrySectionVisibility();
+        autoSave();
+    });
+    metricWorkingDays.addEventListener('change', () => {
+        data.enabledMetrics.workingDays = metricWorkingDays.checked;
+        updateCountrySectionVisibility();
+        autoSave();
+    });
+
+    metricDaysOff.checked = data.enabledMetrics.daysOff;
+    metricDaysOff.addEventListener('change', () => {
+        data.enabledMetrics.daysOff = metricDaysOff.checked;
+        updateCountrySectionVisibility();
+        autoSave();
+    });
+
+    // Country selector
+    updateCountrySectionVisibility();
+    populateCountrySelect();
+
+    countrySelect.addEventListener('change', () => {
+        data.country = countrySelect.value === '' ? null : countrySelect.value;
         autoSave();
     });
 
